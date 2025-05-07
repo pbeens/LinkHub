@@ -1,14 +1,10 @@
-pom.xml
-pom.xml.asc
-*.jar
-*.class
-/lib/
-/classes/
-/target/
-/checkouts/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
-.lein-failures
-.nrepl-port
-.cpcache/
+# Ignore operating system files
+.DS_Store
+Thumbs.db
+
+# Ignore common temporary files
+*.tmp
+*~
+
+# Ignore node_modules directory if you ever add npm packages later
+# node_modules/
