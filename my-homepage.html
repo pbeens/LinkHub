@@ -3,8 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>My Configurable Homepage</title>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <title>My Configurable Homepage</title> <script
+            src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
@@ -470,34 +470,29 @@
         function getDefaultButtonConfig() {
              return [
                 {
-                    "text": "Create ChatGPT Prompt Links",
-                    "link": "https://chatgpt.com/g/g-67ec168e43a881918ca0d9d704101a8f-create-chatgpt-prompt-links",
-                    "color": "Blue"
+                  "text": "Google Search",
+                  "link": "https://www.google.com",
+                  "color": "Blue"
                 },
                 {
-                    "text": "Peter's Writing Formatter",
-                    "link": "https://chatgpt.com/g/g-E5qLnFSfQ-peter-s-writing-formatter",
-                    "color": "Blue"
+                  "text": "Bing Search",
+                  "link": "https://www.bing.com",
+                  "color": "Green"
                 },
                 {
-                    "text": "Ontario TEJ Computer Tech Specialist",
-                    "link": "https://chatgpt.com/g/g-67e563fd0af08191972e8450346dfb22-ontario-tej-computer-tech-specialist",
-                    "color": "Blue"
+                  "text": "DuckDuckGo",
+                  "link": "https://duckduckgo.com/",
+                  "color": "Red"
                 },
                 {
-                    "text": "Transcript Analyser",
-                    "link": "https://chatgpt.com/g/g-GzqHpmyM2-transcript-analyser",
-                    "color": "Blue"
+                  "text": "Gemini",
+                  "link": "https://gemini.google.com/",
+                  "color": "Teal"
                 },
                 {
-                    "text": "ChatGPT",
-                    "link": "https://chatgpt.com/",
-                    "color": "Teal"
-                },
-                {
-                    "text": "Gemini",
-                    "link": "https://gemini.google.com/",
-                    "color": "Teal"
+                  "text": "ChatGPT",
+                  "link": "https://chatgpt.com/",
+                  "color": "Indigo"
                 }
             ];
         }
@@ -559,17 +554,13 @@
         // Handle click on the edit icon
         function handleEditIconClick(e) {
             const clickedElement = e.currentTarget;
-            console.log("Edit icon clicked:", clickedElement);
             const buttonIndex = parseInt(clickedElement.dataset.index);
-            console.log("Button index from dataset:", buttonIndex);
 
             editingButtonIndex = buttonIndex; // Store the index of the button being edited
             const config = loadButtonConfig(); // Get current button config
-            console.log("Current button config:", config);
 
             if (config[buttonIndex]) {
                 const buttonToEdit = config[buttonIndex];
-                console.log("Button to edit:", buttonToEdit);
 
                 // Populate the edit modal
                 editText.value = buttonToEdit.text;
