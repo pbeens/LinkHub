@@ -8,36 +8,41 @@ LinkHub is a customizable homepage for your browser that allows you to easily ma
 * **Drag-and-Drop Reordering:** Organize your buttons by dragging and dropping them.
 * **Title Customization:** Edit the homepage title directly from the UI.
 * **Save & Load Configuration:** Export your configuration to a JSON file for backup or use on another device.
-* **Cross-Device Access (Future Feature):** Planned integration with Box Drive for network-wide access and portability.
+* **Cross-Device Access:** Easily access your homepage configuration from any device by saving it to Box Drive, Dropbox, or Google Drive.
 
-## Installation
+## Quick Start
 
-1. Clone the repository:
+To get started quickly, simply **download the HTML file** (`my-homepage.html`) from the [GitHub repository](https://github.com/pbeens/LinkHub). This is all you need to run LinkHub locally and start customizing buttons right away.
 
-   ```bash
-   git clone https://github.com/pbeens/LinkHub.git
-   ```
+### Setting as Your Browser Homepage
 
-2. Navigate to the project directory:
+Once you have configured LinkHub, save the `my-homepage.html` file in a convenient location, like Box Drive, Dropbox, or Google Drive. This allows you to set it as your browser's homepage on any computer with access to these services.
 
-   ```bash
-   cd LinkHub
-   ```
+* **Chrome:** Go to Settings → On Startup → Open a specific page → Add a new page → Enter the file path or cloud link.
+* **Firefox:** Go to Settings → Home → Homepage and new windows → Enter the file path or cloud link.
+* **Edge:** Go to Settings → Start, home, and new tabs → Open these pages → Add a new page → Enter the file path or cloud link.
 
-3. Open the `my-homepage.html` file in your preferred browser:
+If using a cloud service, make sure the path is accessible, and you are signed in on each computer.
 
-   ```bash
-   open my-homepage.html
-   ```
+## Advanced Installation (Optional)
 
-## Usage
+If you wish to **modify the code** or **contribute to the project**, you can clone the repository:
 
-* **Adding a Button:** Click the `Add New Button` button and fill in the details.
-* **Editing a Button:** Click the edit icon on any button to modify its text, link, or color.
-* **Deleting a Button:** Use the `Delete Button` option inside the edit menu.
-* **Reordering Buttons:** Drag and drop buttons to change their order.
-* **Saving Configuration:** Click `Save Configuration` to export your setup as a JSON file.
-* **Loading Configuration:** Click `Load Configuration` and select a previously saved JSON file.
+```bash
+git clone https://github.com/pbeens/LinkHub.git
+```
+
+Navigate to the project directory:
+
+```bash
+cd LinkHub
+```
+
+Open the `my-homepage.html` file in your preferred browser:
+
+```bash
+open my-homepage.html
+```
 
 ## Configuration File
 
@@ -61,13 +66,12 @@ The configuration is stored in a JSON format. A sample configuration (`default.j
 }
 ```
 
+**Note:** The configuration is saved automatically within the browser's local storage. If you want to maintain a backup or move to another device, be sure to click `Save Configuration` and store the JSON file in a safe location like Box Drive, Dropbox, or Google Drive.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Future Enhancements
+---
 
-* **Box Drive Integration:** Save configuration to Box Drive for network-wide access.
-* **Responsive Mobile View:** Optimize the interface for mobile and tablet devices.
-* **Cloud Sync:** Option to sync configurations through cloud storage.
-
+Happy Browsing with LinkHub! 🚀
