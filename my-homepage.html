@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>My Configurable Homepage</title> <script
-            src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Configurable Homepage</title> <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
         body {
             font-family: "Inter", sans-serif;
             display: flex;
@@ -169,6 +167,21 @@
             background-color: #4f46e5; /* Darker indigo */
         }
 
+        /* About Link Styling */
+        .about-link {
+            display: block; /* Make it a block element for centering */
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #6b7280; /* Gray */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .about-link:hover {
+            color: #4b5563; /* Darker gray on hover */
+            text-decoration: underline;
+        }
+
+
         /* --- Edit Modal Styles --- */
         .edit-modal-overlay {
             position: fixed;
@@ -316,63 +329,61 @@
         }
 
     </style>
-    </head>
-    <body>
+</head>
+<body>
 
-        <div class="container">
-            <div class="title-container">
-                <h1 id="main-title" class="main-title">My Homepage</h1>
-                <input type="text" id="title-input" class="title-input">
-                <i id="title-edit-icon" class="fas fa-edit title-edit-icon"></i>
-            </div>
-
-            <div id="button-container" class="button-grid">
-            </div>
-
-            <button id="add-button" class="add-button">Add New Button</button>
-
-            <div class="manual-save-load">
-                <button id="save-config-button" class="save-button">Save
-                    Configuration</button>
-                <input type="file" id="load-config-input" accept=".json"
-                    style="display: none;">
-                <button id="load-config-button" class="load-button">Load
-                    Configuration</button>
-            </div>
+    <div class="container">
+        <div class="title-container">
+            <h1 id="main-title" class="main-title">My Homepage</h1>
+             <input type="text" id="title-input" class="title-input">
+             <i id="title-edit-icon" class="fas fa-edit title-edit-icon"></i>
         </div>
 
-        <div id="edit-modal-overlay" class="edit-modal-overlay">
-            <div id="edit-modal-content" class="edit-modal-content">
-                <h3>Edit Button</h3>
-                <label for="edit-text">Button Text:</label>
-                <input type="text" id="edit-text">
 
-                <label for="edit-link">Button Link (URL):</label>
-                <input type="url" id="edit-link">
-
-                <label>Button Color:</label>
-                <div id="edit-color-trigger" class="color-picker-trigger">
-                    <div id="edit-color-preview" class="color-preview"></div>
-                    <span id="edit-color-name"></span>
-                </div>
-
-                <div class="edit-modal-actions">
-                    <button id="delete-button" class="delete-button">Delete
-                        Button</button>
-                    <button id="cancel-edit-button"
-                        class="cancel-edit-button">Cancel</button>
-                    <button id="save-changes-button"
-                        class="save-changes-button">Save Changes</button>
-                </div>
+        <div id="button-container" class="button-grid">
             </div>
+
+        <button id="add-button" class="add-button">Add New Button</button>
+
+        <div class="manual-save-load">
+            <button id="save-config-button" class="save-button">Save Configuration</button>
+            <input type="file" id="load-config-input" accept=".json" style="display: none;">
+            <button id="load-config-button" class="load-button">Load Configuration</button>
         </div>
 
-        <div id="color-picker-overlay" class="color-picker-overlay">
-            <div id="color-picker-popup" class="color-picker-popup">
+         <a href="https://github.com/pbeens/LinkHub" class="about-link" target="_blank" rel="noopener noreferrer">About LinkHub</a>
+         </div>
+
+    <div id="edit-modal-overlay" class="edit-modal-overlay">
+        <div id="edit-modal-content" class="edit-modal-content">
+            <h3>Edit Button</h3>
+            <label for="edit-text">Button Text:</label>
+            <input type="text" id="edit-text">
+
+            <label for="edit-link">Button Link (URL):</label>
+            <input type="url" id="edit-link">
+
+            <label>Button Color:</label>
+            <div id="edit-color-trigger" class="color-picker-trigger">
+                 <div id="edit-color-preview" class="color-preview"></div>
+                 <span id="edit-color-name"></span>
+            </div>
+
+            <div class="edit-modal-actions">
+                 <button id="delete-button" class="delete-button">Delete Button</button>
+                <button id="cancel-edit-button" class="cancel-edit-button">Cancel</button>
+                <button id="save-changes-button" class="save-changes-button">Save Changes</button>
             </div>
         </div>
+    </div>
 
-        <script>
+    <div id="color-picker-overlay" class="color-picker-overlay">
+        <div id="color-picker-popup" class="color-picker-popup">
+            </div>
+    </div>
+
+
+    <script>
         const buttonContainer = document.getElementById('button-container');
         const addButton = document.getElementById('add-button');
         const saveConfigButton = document.getElementById('save-config-button');
@@ -470,29 +481,34 @@
         function getDefaultButtonConfig() {
              return [
                 {
-                  "text": "Google Search",
-                  "link": "https://www.google.com",
+                  "text": "Create ChatGPT Prompt Links",
+                  "link": "https://chatgpt.com/g/g-67ec168e43a881918ca0d9d704101a8f-create-chatgpt-prompt-links",
                   "color": "Blue"
                 },
                 {
-                  "text": "Bing Search",
-                  "link": "https://www.bing.com",
-                  "color": "Green"
+                  "text": "Peter's Writing Formatter",
+                  "link": "https://chatgpt.com/g/g-E5qLnFSfQ-peter-s-writing-formatter",
+                  "color": "Blue"
                 },
                 {
-                  "text": "DuckDuckGo",
-                  "link": "https://duckduckgo.com/",
-                  "color": "Red"
+                  "text": "Ontario TEJ Computer Tech Specialist",
+                  "link": "https://chatgpt.com/g/g-67e563fd0af08191972e8450346dfb22-ontario-tej-computer-tech-specialist",
+                  "color": "Blue"
+                },
+                {
+                  "text": "Transcript Analyser",
+                  "link": "https://chatgpt.com/g/g-GzqHpmyM2-transcript-analyser",
+                  "color": "Blue"
+                },
+                {
+                  "text": "ChatGPT",
+                  "link": "https://chatgpt.com/",
+                  "color": "Teal"
                 },
                 {
                   "text": "Gemini",
                   "link": "https://gemini.google.com/",
                   "color": "Teal"
-                },
-                {
-                  "text": "ChatGPT",
-                  "link": "https://chatgpt.com/",
-                  "color": "Indigo"
                 }
             ];
         }
@@ -893,5 +909,5 @@
 
     </script>
 
-    </body>
+</body>
 </html>
