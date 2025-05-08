@@ -12,7 +12,12 @@ LinkHub is a customizable homepage for your browser that allows you to easily ma
 
 ## Quick Start
 
-To get started quickly, simply **download the HTML file** (`my-homepage.html`) from the [GitHub repository](https://github.com/pbeens/LinkHub). This is all you need to run LinkHub locally and start customizing buttons right away.
+To get started quickly, simply **click the link to `my-homepage.html` in the GitHub repository** ([GitHub repository](https://github.com/pbeens/LinkHub)).
+
+1. Click on `my-homepage.html` in the list of files.
+2. Click the **Download Raw File** icon in the top-right corner of the File Preview window.
+
+That's it! The file will be saved locally to your computer. You can now open the `my-homepage.html` file directly in your browser and start adding, editing, and organizing your buttons.
 
 ### Setting as Your Browser Homepage
 
