@@ -90,6 +90,10 @@ The configuration is stored in a JSON format. A sample configuration (`default.j
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Changelog
+
+For a detailed history of changes, please refer to the [Changelog](./CHANGELOG.md).
+
 ---
 
 Happy Browsing with LinkHub! 🚀

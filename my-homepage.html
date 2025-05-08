@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Configurable Homepage</title> <script src="https://cdn.tailwindcss.com"></script>
+    <title>My Homepage</title> <script src="https://cdn.tailwindcss.com"></script>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
@@ -186,6 +186,9 @@
          .separator {
              margin: 0 8px; /* Space around the pipe symbol */
          }
+         .version-info {
+             /* Inherits color and font size from footer-links */
+         }
 
 
         /* --- Edit Modal Styles --- */
@@ -361,7 +364,8 @@
              <a href="https://github.com/pbeens/LinkHub" target="_blank" rel="noopener noreferrer">About LinkHub</a>
              <span class="separator">|</span>
              <span class="search-tip">(Use Control/Command + F to search)</span>
-         </div>
+             <span class="separator">|</span> <span class="version-info">v1.0.1</span> 
+		 </div>
 
 
     </div>
@@ -522,7 +526,7 @@
 
          // Load title from local storage
          function loadTitle() {
-             return localStorage.getItem(STORAGE_KEY_TITLE) || 'My Standard Homepage'; // Default title
+             return localStorage.getItem(STORAGE_KEY_TITLE) || 'My Homepage'; // Default title
          }
 
         // Save button configuration to local storage
