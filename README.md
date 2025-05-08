@@ -31,6 +31,17 @@ Once you have configured LinkHub, save the `my-homepage.html` file in a convenie
 
 If using a cloud service, make sure the path is accessible, and you are signed in on each computer.
 
+## ⚠️ Caution When Updating
+
+**Important:** If you decide to update `my-homepage.html` by downloading a new version from the repository, it will contain the **default `default.json` settings**. This means that your current button configuration will be **overwritten**.
+
+To avoid losing your personalized setup:
+
+1. **Save your current configuration** by clicking `Save Configuration` before updating.
+2. After updating `my-homepage.html`, **load your saved configuration** by clicking `Load Configuration` and selecting your saved JSON file.
+
+This ensures your buttons and settings remain exactly as you left them.
+
 ## Advanced Installation (Optional)
 
 If you wish to **modify the code** or **contribute to the project**, you can clone the repository:
