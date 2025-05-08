@@ -167,19 +167,25 @@
             background-color: #4f46e5; /* Darker indigo */
         }
 
-        /* About Link Styling */
-        .about-link {
-            display: block; /* Make it a block element for centering */
+        /* About Link and Search Tip Styling */
+        .footer-links {
             margin-top: 20px;
             font-size: 0.9rem;
             color: #6b7280; /* Gray */
-            text-decoration: none;
-            transition: color 0.2s ease;
+            text-align: center; /* Center the text */
         }
-        .about-link:hover {
-            color: #4b5563; /* Darker gray on hover */
-            text-decoration: underline;
+        .footer-links a {
+             color: #6b7280; /* Gray */
+             text-decoration: none;
+             transition: color 0.2s ease;
         }
+         .footer-links a:hover {
+             color: #4b5563; /* Darker gray on hover */
+             text-decoration: underline;
+         }
+         .separator {
+             margin: 0 8px; /* Space around the pipe symbol */
+         }
 
 
         /* --- Edit Modal Styles --- */
@@ -351,8 +357,14 @@
             <button id="load-config-button" class="load-button">Load Configuration</button>
         </div>
 
-         <a href="https://github.com/pbeens/LinkHub" class="about-link" target="_blank" rel="noopener noreferrer">About LinkHub</a>
+         <div class="footer-links">
+             <a href="https://github.com/pbeens/LinkHub" target="_blank" rel="noopener noreferrer">About LinkHub</a>
+             <span class="separator">|</span>
+             <span class="search-tip">(Use Control/Command + F to search)</span>
          </div>
+
+
+    </div>
 
     <div id="edit-modal-overlay" class="edit-modal-overlay">
         <div id="edit-modal-content" class="edit-modal-content">
@@ -481,41 +493,36 @@
         function getDefaultButtonConfig() {
              return [
                 {
-                  "text": "Create ChatGPT Prompt Links",
-                  "link": "https://chatgpt.com/g/g-67ec168e43a881918ca0d9d704101a8f-create-chatgpt-prompt-links",
+                  "text": "Google Search",
+                  "link": "https://www.google.com",
                   "color": "Blue"
                 },
                 {
-                  "text": "Peter's Writing Formatter",
-                  "link": "https://chatgpt.com/g/g-E5qLnFSfQ-peter-s-writing-formatter",
-                  "color": "Blue"
+                  "text": "Bing Search",
+                  "link": "https://www.bing.com",
+                  "color": "Green"
                 },
                 {
-                  "text": "Ontario TEJ Computer Tech Specialist",
-                  "link": "https://chatgpt.com/g/g-67e563fd0af08191972e8450346dfb22-ontario-tej-computer-tech-specialist",
-                  "color": "Blue"
-                },
-                {
-                  "text": "Transcript Analyser",
-                  "link": "https://chatgpt.com/g/g-GzqHpmyM2-transcript-analyser",
-                  "color": "Blue"
-                },
-                {
-                  "text": "ChatGPT",
-                  "link": "https://chatgpt.com/",
-                  "color": "Teal"
+                  "text": "DuckDuckGo",
+                  "link": "https://duckduckgo.com/",
+                  "color": "Red"
                 },
                 {
                   "text": "Gemini",
                   "link": "https://gemini.google.com/",
                   "color": "Teal"
+                },
+                {
+                  "text": "ChatGPT",
+                  "link": "https://chatgpt.com/",
+                  "color": "Indigo"
                 }
             ];
         }
 
          // Load title from local storage
          function loadTitle() {
-             return localStorage.getItem(STORAGE_KEY_TITLE) || 'My Homepage'; // Default title
+             return localStorage.getItem(STORAGE_KEY_TITLE) || 'My Standard Homepage'; // Default title
          }
 
         // Save button configuration to local storage
