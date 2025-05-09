@@ -33,7 +33,7 @@ If using a cloud service, make sure the path is accessible, and you are signed i
 
 ## ⚠️ Caution When Updating
 
-**Important:** If you decide to update `my-homepage.html` by downloading a new version from the repository, it contains the built-in **default configuration**. This means that your current button configuration will be **overwritten**.
+**Important:** If you decide to update `my-homepage.html` by downloading a new version from the repository, it will contain the **default `default.json` settings**. This means that your current button configuration will be **overwritten**.
 
 To avoid losing your personalized setup:
 
@@ -68,35 +68,20 @@ The configuration is stored in a JSON format. A sample configuration (`default.j
 
 ```json
 {
-    "title": "LinkHub Homepage",
+    "title": "My Homepage",
     "buttons": [
-      {
-        "text": "Google Search",
-        "link": "https://www.google.com",
-        "color": "Blue"
-      },
-      {
-        "text": "Bing Search",
-        "link": "https://www.bing.com",
-        "color": "Green"
-      },
-      {
-        "text": "DuckDuckGo",
-        "link": "https://duckduckgo.com/",
-        "color": "Red"
-      },
-      {
-        "text": "Gemini",
-        "link": "https://gemini.google.com/",
-        "color": "Teal"
-      },
-      {
-        "text": "ChatGPT",
-        "link": "https://chatgpt.com/",
-        "color": "Indigo"
-      }
+        {
+            "text": "Google Search",
+            "link": "https://www.google.com",
+            "color": "Blue"
+        },
+        {
+            "text": "Bing Search",
+            "link": "https://www.bing.com",
+            "color": "Green"
+        }
     ]
-  }
+}
 ```
 
 **Note:** The configuration is saved automatically within the browser's local storage. If you want to maintain a backup or move to another device, be sure to click `Save Configuration` and store the JSON file in a safe location like Box Drive, Dropbox, or Google Drive.
