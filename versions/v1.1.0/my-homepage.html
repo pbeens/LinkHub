@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Homepage</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Keep minimal custom CSS just for layout & drag visuals */
+        body{font-family:Inter, sans-serif;}
+        .link-button.dragging{opacity:.5;}
+        .link-button.drag-over{outline:2px solid #3b82f6; outline-offset:2px;}
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center items-start py-10">
+    <div class="w-full max-w-screen-xl bg-white shadow-md rounded-lg p-6">
+        <!-- Title -->
+        <div class="flex justify-center items-center gap-2.5 mb-8">
+            <h1 id="main-title" class="text-3xl font-bold text-gray-800 cursor-pointer">My Homepage</h1>
+            <input id="title-input" type="text" class="text-3xl font-bold text-gray-800 border border-gray-300 rounded-md p-1 text-center hidden w-full">
+            <i id="title-edit-icon" class="fas fa-edit text-gray-500 text-lg cursor-pointer transition-colors duration-200 hover:text-gray-600"></i>
+        </div>
+
+        <!-- Buttons grid -->
+        <div id="button-container" class="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(120px,_1fr))]"></div>
+
+        <!-- Add button -->
+        <button id="add-button" class="w-full mt-6 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold">Add New Button</button>
+
+        <!-- Save / Load -->
+        <div class="flex flex-wrap justify-center gap-3 mt-6">
+            <button id="save-config-button" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold">Save Configuration</button>
+            <input id="load-config-input" type="file" accept=".json" class="hidden">
+            <button id="load-config-button" class="px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-semibold">Load Configuration</button>
+        </div>
+
+        <div class="text-center text-sm text-gray-500 mt-4">
+            <a href="https://github.com/pbeens/LinkHub" target="_blank" rel="noopener noreferrer" class="hover:underline">About LinkHub</a>
+            <span class="mx-2">|</span>
+            (Use Control/Command + F to search)
+            <span class="mx-2">|</span>
+            v1.1.0
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+        <div class="bg-white rounded-lg p-6 w-11/12 max-w-sm">
+            <h3 class="text-lg font-semibold mb-4 text-center">Edit Button</h3>
+            <label class="block font-medium mb-1" for="edit-text">Button Text:</label>
+            <input id="edit-text" type="text" class="w-full border rounded px-3 py-2 mb-4">
+
+            <label class="block font-medium mb-1" for="edit-link">Button Link (URL):</label>
+            <input id="edit-link" type="url" class="w-full border rounded px-3 py-2 mb-4">
+
+            <label class="block font-medium mb-1">Button Color:</label>
+            <div id="edit-color-trigger" class="flex items-center gap-2 cursor-pointer mb-4">
+                <div id="edit-color-preview" class="w-6 h-6 rounded border"></div>
+                <span id="edit-color-name" class="text-sm"></span>
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <button id="delete-button" class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded">Delete</button>
+                <div class="flex gap-2">
+                    <button id="cancel-edit-button" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded">Cancel</button>
+                    <button id="save-changes-button" class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Picker -->
+    <div id="color-picker-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+        <div id="color-picker-popup" class="bg-white rounded-lg p-4 grid gap-2 grid-cols-5 max-w-xs"></div>
+    </div>
+
+<script>
+/* ---------- Constants ---------- */
+const STORAGE_KEY_BUTTONS = 'configurableHomepageButtons';
+const STORAGE_KEY_TITLE   = 'configurableHomepageTitle';
+
+const COLORS = {
+    Blue:    { ring: 'ring-blue-500',     class: 'blue' },
+    Green:   { ring: 'ring-green-500',    class: 'green' },
+    Red:     { ring: 'ring-red-500',      class: 'red' },
+    Indigo:  { ring: 'ring-indigo-500',   class: 'indigo' },
+    Teal:    { ring: 'ring-teal-500',     class: 'teal' },
+};
+
+/* ---------- Dom refs ---------- */
+const mainTitle         = document.getElementById('main-title');
+const titleInput        = document.getElementById('title-input');
+const titleEditIcon     = document.getElementById('title-edit-icon');
+
+const buttonContainer   = document.getElementById('button-container');
+const addButton         = document.getElementById('add-button');
+
+const saveBtn           = document.getElementById('save-config-button');
+const loadBtn           = document.getElementById('load-config-button');
+const loadInput         = document.getElementById('load-config-input');
+
+/* Edit modal */
+const modalOverlay      = document.getElementById('edit-modal-overlay');
+const editText          = document.getElementById('edit-text');
+const editLink          = document.getElementById('edit-link');
+const editColorTrigger  = document.getElementById('edit-color-trigger');
+const editColorPreview  = document.getElementById('edit-color-preview');
+const editColorName     = document.getElementById('edit-color-name');
+const modalSave         = document.getElementById('save-changes-button');
+const modalCancel       = document.getElementById('cancel-edit-button');
+const modalDelete       = document.getElementById('delete-button');
+
+/* Color picker */
+const colorPickerOverlay = document.getElementById('color-picker-overlay');
+const colorPickerPopup   = document.getElementById('color-picker-popup');
+
+/* ---------- State ---------- */
+let editingIndex = null;
+let dragSrcEl    = null;
+
+/* ---------- Load & Save ---------- */
+function getButtons() {
+    const raw = localStorage.getItem(STORAGE_KEY_BUTTONS);
+    if (!raw) return getDefaultButtons();
+    try {
+        const arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) throw new Error();
+        return arr;
+    } catch { return getDefaultButtons(); }
+}
+
+function saveButtons(arr) {
+    localStorage.setItem(STORAGE_KEY_BUTTONS, JSON.stringify(arr));
+}
+
+function getTitle() {
+    return localStorage.getItem(STORAGE_KEY_TITLE) || 'LinkHub Homepage';
+}
+
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Saves the homepage title to local storage.
+ *
+ * @param {string} t - The new title
+ */
+/*******  adb737d8-4c86-445b-a672-a5d6a591ec5e  *******/
+function saveTitle(t) {
+    localStorage.setItem(STORAGE_KEY_TITLE, t);
+}
+
+/* ---------- Default ---------- */
+function getDefaultButtons() {
+    return [
+        {text:'Google Search',   link:'https://www.google.com',   color:'Blue'},
+        {text:'Bing Search',     link:'https://www.bing.com',     color:'Green'},
+        {text:'DuckDuckGo', link:'https://duckduckgo.com/', color:'Red'},
+        {text:'Gemini', link:'https://gemini.google.com',  color:'Teal'},
+        {text:'ChatGPT',  link:'https://chatgpt.com',      color:'Indigo'},
+    ];
+}
+
+/* ---------- Rendering ---------- */
+function renderTitle() {
+    const t = getTitle();
+    mainTitle.textContent = t;
+    document.title = t;
+}
+
+function colorToClasses(name) {
+    const c = COLORS[name] ?? COLORS['Blue'];
+    return `bg-${c.class}-500 hover:bg-${c.class}-600`;
+}
+
+function renderButtons() {
+    const data = getButtons();
+    buttonContainer.innerHTML = '';
+    data.forEach((btn, idx) => {
+        const a = document.createElement('a');
+        a.href = btn.link;
+        a.textContent = btn.text;
+        a.target = '_blank';
+        a.draggable = true;
+        a.dataset.index = idx;
+        a.className = `
+            link-button group relative flex items-center justify-center text-center py-3 px-2 rounded-lg text-white font-semibold select-none
+            ${colorToClasses(btn.color)}
+        `.replace(/\s+/g,' ').trim();
+
+        /* Edit icon */
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-edit absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-xs cursor-pointer';
+        icon.addEventListener('click', e => {
+            e.preventDefault(); e.stopPropagation();
+            openEditModal(idx);
+        });
+        a.appendChild(icon);
+
+        /* Drag events */
+        a.addEventListener('dragstart', handleDragStart);
+        a.addEventListener('dragover',  handleDragOver);
+        a.addEventListener('dragleave', handleDragLeave);
+        a.addEventListener('drop',      handleDrop);
+        a.addEventListener('dragend',   handleDragEnd);
+
+        buttonContainer.appendChild(a);
+    });
+}
+
+/* ---------- Dragging ---------- */
+function handleDragStart(e) {
+    dragSrcEl = e.currentTarget;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrcEl.dataset.index);
+    dragSrcEl.classList.add('dragging');
+}
+function handleDragOver(e) {
+    e.preventDefault();
+    const tgt = e.currentTarget;
+    if (tgt === dragSrcEl) return;
+    tgt.classList.add('drag-over');
+}
+function handleDragLeave(e){
+    e.currentTarget.classList.remove('drag-over');
+}
+function handleDrop(e){
+    e.preventDefault();
+    const tgt = e.currentTarget;
+    tgt.classList.remove('drag-over');
+    const from = parseInt(dragSrcEl.dataset.index, 10);
+    const to   = parseInt(tgt.dataset.index, 10);
+    if (from === to) return;
+    const arr = getButtons();
+    const [moved] = arr.splice(from,1);
+    arr.splice(to,0,moved);
+    saveButtons(arr);
+    renderButtons();
+}
+function handleDragEnd() {
+    dragSrcEl.classList.remove('dragging');
+    dragSrcEl = null;
+}
+
+/* ---------- Edit Modal ---------- */
+function openEditModal(idx){
+    editingIndex = idx;
+    const btn = getButtons()[idx];
+    editText.value = btn.text;
+    editLink.value = btn.link;
+    editColorName.textContent = btn.color;
+    updateEditPreview(btn.color);
+    modalOverlay.classList.remove('hidden');
+}
+function closeEditModal(){ modalOverlay.classList.add('hidden'); editingIndex = null; }
+
+/* preview colour square */
+function updateEditPreview(colorName){
+    Object.values(COLORS).forEach(c=>{
+        editColorPreview.classList.remove(`bg-${c.class}-500`);
+    });
+    editColorPreview.classList.add(`bg-${(COLORS[colorName]||COLORS.Blue).class}-500`);
+}
+
+/* save changes */
+modalSave.addEventListener('click', ()=>{
+    if (editingIndex == null) return;
+    const arr = getButtons();
+    arr[editingIndex] = {
+        text: editText.value.trim() || 'Untitled',
+        link: editLink.value.trim() || '#',
+        color: editColorName.textContent || 'Blue',
+    };
+    saveButtons(arr);
+    renderButtons();
+    closeEditModal();
+});
+modalCancel.addEventListener('click', closeEditModal);
+modalOverlay.addEventListener('click', e=>{ if (e.target === modalOverlay) closeEditModal(); });
+modalDelete.addEventListener('click', ()=>{
+    if (editingIndex == null) return;
+    const arr = getButtons();
+    arr.splice(editingIndex,1);
+    saveButtons(arr);
+    renderButtons();
+    closeEditModal();
+});
+
+/* ---------- Color Picker ---------- */
+editColorTrigger.addEventListener('click', ()=>{
+    colorPickerPopup.innerHTML = '';
+    Object.keys(COLORS).forEach(name=>{
+        const div = document.createElement('div');
+        div.className = `w-8 h-8 rounded cursor-pointer ${colorToClasses(name)} ring-2 ring-transparent`;
+        div.addEventListener('click', ()=>{
+            editColorName.textContent = name;
+            updateEditPreview(name);
+            colorPickerOverlay.classList.add('hidden');
+        });
+        colorPickerPopup.appendChild(div);
+    });
+    colorPickerOverlay.classList.remove('hidden');
+});
+colorPickerOverlay.addEventListener('click', e=>{
+    if (e.target === colorPickerOverlay) colorPickerOverlay.classList.add('hidden');
+});
+
+/* ---------- Add Button ---------- */
+addButton.addEventListener('click', ()=>{
+    const arr = getButtons();
+    arr.push({text:'New Button', link:'#', color:'Blue'});
+    saveButtons(arr);
+    renderButtons();
+});
+
+/* ---------- Save / Load ---------- */
+saveBtn.addEventListener('click', ()=>{
+    const cfg = {title: getTitle(), buttons: getButtons()};
+    const blob = new Blob([JSON.stringify(cfg,null,2)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'homepage_config.json'; a.click();
+    URL.revokeObjectURL(url);
+});
+
+loadBtn.addEventListener('click', ()=> loadInput.click());
+loadInput.addEventListener('change', e=>{
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt=>{
+        try{
+            const obj = JSON.parse(evt.target.result);
+            const buttons = obj.buttons || obj;
+            if (!Array.isArray(buttons)) throw new Error('Invalid config structure');
+            saveButtons(buttons);
+            if (obj.title) saveTitle(obj.title);
+            renderButtons(); renderTitle();
+            alert('Configuration loaded');
+        }catch(err){ alert('Error: '+err.message); }
+    };
+    reader.readAsText(file);
+});
+
+/* ---------- Title Editing ---------- */
+titleEditIcon.addEventListener('click', ()=>{
+    titleInput.value = mainTitle.textContent;
+    mainTitle.classList.add('hidden');
+    titleInput.classList.remove('hidden');
+    titleInput.focus();
+});
+function commitTitle(){
+    const t = titleInput.value.trim() || 'LinkHub Homepage';
+    saveTitle(t);
+    titleInput.classList.add('hidden');
+    mainTitle.classList.remove('hidden');
+    renderTitle();
+}
+titleInput.addEventListener('blur', commitTitle);
+titleInput.addEventListener('keydown', e=>{ if (e.key === 'Enter') commitTitle();});
+
+/* ---------- Init ---------- */
+renderTitle();
+renderButtons();
+</script>
+</body>
+</html>
