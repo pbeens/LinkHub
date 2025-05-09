@@ -1,0 +1,31 @@
+{
+    "title": "LinkHub Homepage",
+    "buttons": [
+      {
+        "text": "Google Search",
+        "link": "https://www.google.com",
+        "color": "Blue"
+      },
+      {
+        "text": "Bing Search",
+        "link": "https://www.bing.com",
+        "color": "Green"
+      },
+      {
+        "text": "DuckDuckGo",
+        "link": "https://duckduckgo.com/",
+        "color": "Red"
+      },
+      {
+        "text": "Gemini",
+        "link": "https://gemini.google.com/",
+        "color": "Teal"
+      },
+      {
+        "text": "ChatGPT",
+        "link": "https://chatgpt.com/",
+        "color": "Indigo"
+      }
+    ]
+  }
+  

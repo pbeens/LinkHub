@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Homepage</title> <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f3f4f6; /* Light gray background */
+            padding: 20px;
+            position: relative; /* Needed for absolute/fixed positioning of popups */
+        }
+        .container {
+            background-color: #ffffff; /* White background */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; /* Increased max-width to accommodate more buttons */
+            text-align: center;
+            z-index: 1; /* Ensure container is above the overlay */
+            position: relative;
+        }
+
+        /* Title Editing Styles */
+        .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* Space between title and icon */
+            margin-bottom: 30px; /* Space below the title */
+        }
+        .main-title {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* gray-800 */
+            cursor: pointer; /* Indicate it's editable */
+        }
+        .title-edit-icon {
+            color: #6b7280; /* gray-500 */
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .title-edit-icon:hover {
+            color: #4b5563; /* gray-600 */
+        }
+        .title-input {
+            font-size: 1.875rem; /* Match title font size */
+            font-weight: 700;
+            color: #1f2937;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 5px;
+            text-align: center;
+            display: none; /* Hidden by default */
+            width: 100%; /* Take full width of container */
+            box-sizing: border-box;
+        }
+
+
+        .button-grid {
+            display: grid;
+            /* Adjusted grid to aim for 5 columns, allowing flexibility */
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px; /* Reduced gap */
+            margin-top: 0; /* Adjusted margin since title has margin-bottom */
+        }
+        .link-button {
+            position: relative; /* Needed for absolute positioning of the edit icon */
+            display: flex; /* Use flex to center text vertically */
+            justify-content: center;
+            align-items: center;
+            padding: 10px 15px; /* Reduced padding */
+            /* background-color is now set by JS based on config.color */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem; /* Reduced font size */
+            font-weight: 600;
+            text-align: center;
+            cursor: grab; /* Indicate draggable */
+            min-height: 40px; /* Ensure minimum height even with short text */
+        }
+        .link-button:hover {
+             background-color: rgba(0, 0, 0, 0.1); /* Slightly darker overlay on hover */
+        }
+         .link-button.dragging {
+            opacity: 0.5; /* Visual cue when dragging */
+        }
+        .link-button.drag-over {
+            border-top: 2px solid #1c64f2; /* Visual cue for drag target */
+        }
+
+        .edit-icon {
+            position: absolute;
+            top: 5px; /* Position from top */
+            right: 5px; /* Position from right */
+            color: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 10; /* Ensure icon is clickable */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s ease;
+        }
+        .link-button:hover .edit-icon {
+            opacity: 1; /* Show on button hover */
+        }
+         /* Ensure icon is visible when button is being dragged */
+         .link-button.dragging .edit-icon {
+             opacity: 1;
+         }
+
+
+        .add-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #10b981; /* Green */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .add-button:hover {
+            background-color: #059669; /* Darker green */
+        }
+
+        .manual-save-load {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .manual-save-load button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .save-button {
+            background-color: #f59e0b; /* Amber */
+            color: white;
+        }
+        .save-button:hover {
+            background-color: #d97706; /* Darker amber */
+        }
+        .load-button {
+            background-color: #6366f1; /* Indigo */
+            color: white;
+        }
+        .load-button:hover {
+            background-color: #4f46e5; /* Darker indigo */
+        }
+
+        /* About Link and Search Tip Styling */
+        .footer-links {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #6b7280; /* Gray */
+            text-align: center; /* Center the text */
+        }
+        .footer-links a {
+             color: #6b7280; /* Gray */
+             text-decoration: none;
+             transition: color 0.2s ease;
+        }
+         .footer-links a:hover {
+             color: #4b5563; /* Darker gray on hover */
+             text-decoration: underline;
+         }
+         .separator {
+             margin: 0 8px; /* Space around the pipe symbol */
+         }
+         .version-info {
+             /* Inherits color and font size from footer-links */
+         }
+
+
+        /* --- Edit Modal Styles --- */
+        .edit-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
+            visibility: hidden; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .edit-modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .edit-modal-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px; /* Limit modal width */
+        }
+
+        .edit-modal-content h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .edit-modal-content label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4b5563; /* Gray */
+        }
+
+        .edit-modal-content input[type="text"],
+        .edit-modal-content input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+         .edit-modal-content .color-picker-trigger {
+             margin-bottom: 20px;
+         }
+
+        .edit-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .edit-modal-actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .save-changes-button {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+        }
+        .save-changes-button:hover {
+            background-color: #2563eb; /* Darker blue */
+        }
+
+        .cancel-edit-button {
+            background-color: #e5e7eb; /* Light gray */
+            color: #4b5563; /* Gray */
+        }
+        .cancel-edit-button:hover {
+            background-color: #d1d5db; /* Darker light gray */
+        }
+
+         .delete-button {
+            background-color: #ef4444; /* Red */
+            color: white;
+            margin-right: auto; /* Push delete to the left */
+         }
+         .delete-button:hover {
+             background-color: #dc2626; /* Darker red */
+         }
+
+
+        /* --- Color Picker Popup Styles (Reused) --- */
+        .color-picker-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001; /* Ensure it's on top of the edit modal */
+            visibility: hidden; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .color-picker-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .color-picker-popup {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); /* Grid for color squares */
+            gap: 10px;
+            max-width: 300px; /* Limit popup width */
+            width: 90%; /* Responsive width */
+        }
+
+        .color-square {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent; /* Border for selection indication */
+            transition: border-color 0.2s ease;
+        }
+        .color-square:hover {
+            border-color: #4b5563; /* Darker gray border on hover */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="title-container">
+            <h1 id="main-title" class="main-title">My Homepage</h1>
+             <input type="text" id="title-input" class="title-input">
+             <i id="title-edit-icon" class="fas fa-edit title-edit-icon"></i>
+        </div>
+
+
+        <div id="button-container" class="button-grid">
+            </div>
+
+        <button id="add-button" class="add-button">Add New Button</button>
+
+        <div class="manual-save-load">
+            <button id="save-config-button" class="save-button">Save Configuration</button>
+            <input type="file" id="load-config-input" accept=".json" style="display: none;">
+            <button id="load-config-button" class="load-button">Load Configuration</button>
+        </div>
+
+         <div class="footer-links">
+             <a href="https://github.com/pbeens/LinkHub" target="_blank" rel="noopener noreferrer">About LinkHub</a>
+             <span class="separator">|</span>
+             <span class="search-tip">(Use Control/Command + F to search)</span>
+             <span class="separator">|</span> <span class="version-info">v1.0.1</span> 
+		 </div>
+
+
+    </div>
+
+    <div id="edit-modal-overlay" class="edit-modal-overlay">
+        <div id="edit-modal-content" class="edit-modal-content">
+            <h3>Edit Button</h3>
+            <label for="edit-text">Button Text:</label>
+            <input type="text" id="edit-text">
+
+            <label for="edit-link">Button Link (URL):</label>
+            <input type="url" id="edit-link">
+
+            <label>Button Color:</label>
+            <div id="edit-color-trigger" class="color-picker-trigger">
+                 <div id="edit-color-preview" class="color-preview"></div>
+                 <span id="edit-color-name"></span>
+            </div>
+
+            <div class="edit-modal-actions">
+                 <button id="delete-button" class="delete-button">Delete Button</button>
+                <button id="cancel-edit-button" class="cancel-edit-button">Cancel</button>
+                <button id="save-changes-button" class="save-changes-button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="color-picker-overlay" class="color-picker-overlay">
+        <div id="color-picker-popup" class="color-picker-popup">
+            </div>
+    </div>
+
+
+    <script>
+        const buttonContainer = document.getElementById('button-container');
+        const addButton = document.getElementById('add-button');
+        const saveConfigButton = document.getElementById('save-config-button');
+        const loadConfigButton = document.getElementById('load-config-button');
+        const loadConfigInput = document.getElementById('load-config-input'); // Hidden file input
+
+        const mainTitle = document.getElementById('main-title');
+        const titleInput = document.getElementById('title-input');
+        const titleEditIcon = document.getElementById('title-edit-icon');
+
+
+        const editModalOverlay = document.getElementById('edit-modal-overlay');
+        const editModalContent = document.getElementById('edit-modal-content');
+        const editText = document.getElementById('edit-text');
+        const editLink = document.getElementById('edit-link');
+        const editColorTrigger = document.getElementById('edit-color-trigger');
+        const editColorPreview = document.getElementById('edit-color-preview');
+        const editColorName = document.getElementById('edit-color-name');
+        const saveChangesButton = document.getElementById('save-changes-button');
+        const cancelEditButton = document.getElementById('cancel-edit-button');
+        const deleteButton = document.getElementById('delete-button');
+
+
+        const colorPickerOverlay = document.getElementById('color-picker-overlay');
+        const colorPickerPopup = document.getElementById('color-picker-popup');
+
+        // Keys for local storage
+        const STORAGE_KEY_BUTTONS = 'configurableHomepageButtons';
+        const STORAGE_KEY_TITLE = 'configurableHomepageTitle';
+
+
+        let draggedItem = null; // To keep track of the element being dragged
+        let editingButtonIndex = null; // To track which button's color is being edited (reused for modal)
+
+         // Define the available colors (Name: Hex Code)
+        const availableColors = {
+            'Blue': '#3b82f6',
+            'Green': '#10b981',
+            'Red': '#ef4444',
+            'Indigo': '#6366f1',
+            'Teal': '#06b6d4'
+        };
+
+         // Get the hex code from the color name
+         function getColorHex(colorName) {
+             return availableColors[colorName] || availableColors['Blue']; // Default to Blue
+         }
+
+         // Get the color name from the hex code (useful if loading config with hex instead of name)
+         function getColorName(hex) {
+             for (const name in availableColors) {
+                 if (availableColors[name] === hex) {
+                     return name;
+                 }
+             }
+             return 'Blue'; // Default to Blue if hex not found
+         }
+
+        // Load button configuration from local storage
+        function loadButtonConfig() {
+            const savedConfig = localStorage.getItem(STORAGE_KEY_BUTTONS);
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    // Basic validation and add default color if missing or invalid
+                    if (Array.isArray(config)) {
+                        return config.map(item => {
+                            if (typeof item.text === 'string' && typeof item.link === 'string') {
+                                // Ensure color is a valid name from our list
+                                const colorName = item.color && availableColors[item.color] ? item.color : 'Blue';
+                                return {
+                                    text: item.text,
+                                    link: item.link,
+                                    color: colorName
+                                };
+                            } else {
+                                console.error("Invalid item format in local storage:", item);
+                                return null; // Filter out invalid items
+                            }
+                        }).filter(item => item !== null); // Remove any null items
+                    } else {
+                        console.error("Invalid configuration format in local storage.");
+                        return getDefaultButtonConfig(); // Return default if format is wrong
+                    }
+                } catch (e) {
+                    console.error("Error parsing local storage configuration:", e);
+                    return getDefaultButtonConfig(); // Return default on parse error
+                }
+            }
+            // Default configuration if none saved
+            return getDefaultButtonConfig();
+        }
+
+        // Default button configuration
+        function getDefaultButtonConfig() {
+             return [
+                {
+                  "text": "Google Search",
+                  "link": "https://www.google.com",
+                  "color": "Blue"
+                },
+                {
+                  "text": "Bing Search",
+                  "link": "https://www.bing.com",
+                  "color": "Green"
+                },
+                {
+                  "text": "DuckDuckGo",
+                  "link": "https://duckduckgo.com/",
+                  "color": "Red"
+                },
+                {
+                  "text": "Gemini",
+                  "link": "https://gemini.google.com/",
+                  "color": "Teal"
+                },
+                {
+                  "text": "ChatGPT",
+                  "link": "https://chatgpt.com/",
+                  "color": "Indigo"
+                }
+            ];
+        }
+
+         // Load title from local storage
+         function loadTitle() {
+             return localStorage.getItem(STORAGE_KEY_TITLE) || 'My Homepage'; // Default title
+         }
+
+        // Save button configuration to local storage
+        function saveButtonConfig(config) {
+            localStorage.setItem(STORAGE_KEY_BUTTONS, JSON.stringify(config));
+        }
+
+         // Save title to local storage
+         function saveTitle(title) {
+             localStorage.setItem(STORAGE_KEY_TITLE, title);
+         }
+
+
+        // Render the buttons on the page
+        function renderButtons(config) {
+            buttonContainer.innerHTML = ''; // Clear existing buttons
+            config.forEach((button, index) => {
+                const a = document.createElement('a');
+                a.href = button.link;
+                a.textContent = button.text;
+                a.classList.add('link-button');
+                a.style.backgroundColor = getColorHex(button.color); // Set background color
+                a.setAttribute('target', '_blank'); // Open link in new tab
+                a.setAttribute('draggable', true); // Make button draggable
+                a.dataset.index = index; // Store original index for drag/drop
+
+                 // Add edit icon
+                 const editIcon = document.createElement('i');
+                 editIcon.classList.add('fas', 'fa-edit', 'edit-icon'); // Font Awesome edit icon
+                 editIcon.dataset.index = index; // Store button index on the icon
+                 // Stop click propagation and prevent default action for the icon
+                 editIcon.addEventListener('click', (e) => {
+                     e.stopPropagation();
+                     e.preventDefault(); // Prevent the default link behavior
+                     handleEditIconClick(e); // Call the edit handler
+                 });
+
+
+                // Drag and drop event listeners for buttons
+                a.addEventListener('dragstart', handleDragStart);
+                a.addEventListener('dragover', handleDragOver);
+                a.addEventListener('dragleave', handleDragLeave);
+                a.addEventListener('drop', handleDrop);
+                a.addEventListener('dragend', handleDragEnd);
+
+
+                a.appendChild(editIcon); // Add icon to the button
+                buttonContainer.appendChild(a);
+            });
+        }
+
+        // Handle click on the edit icon
+        function handleEditIconClick(e) {
+            const clickedElement = e.currentTarget;
+            const buttonIndex = parseInt(clickedElement.dataset.index);
+
+            editingButtonIndex = buttonIndex; // Store the index of the button being edited
+            const config = loadButtonConfig(); // Get current button config
+
+            if (config[buttonIndex]) {
+                const buttonToEdit = config[buttonIndex];
+
+                // Populate the edit modal
+                editText.value = buttonToEdit.text;
+                editLink.value = buttonToEdit.link;
+                editColorPreview.style.backgroundColor = getColorHex(buttonToEdit.color);
+                editColorName.textContent = buttonToEdit.color;
+
+                showEditModal(); // Show the modal
+
+            } else {
+                console.error("Attempted to edit a button with an invalid index:", buttonIndex);
+                // Optionally hide the modal if it somehow opened incorrectly
+                hideEditModal();
+            }
+        }
+
+        // Add a new button
+        addButton.addEventListener('click', () => {
+            const config = loadButtonConfig(); // Load current button config
+            config.push({ text: 'New Button', link: '', color: 'Blue' }); // Add a new default button with a color
+            saveButtonConfig(config);
+            renderButtons(config);
+        });
+
+        // --- Manual Save/Load Functionality ---
+
+        // Save configuration to a JSON file
+        saveConfigButton.addEventListener('click', () => {
+            const buttonConfig = loadButtonConfig(); // Get current button config
+            const title = loadTitle(); // Get current title
+            const fullConfig = {
+                title: title,
+                buttons: buttonConfig
+            };
+            const configJson = JSON.stringify(fullConfig, null, 2); // Pretty print JSON
+
+            const blob = new Blob([configJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'homepage_config.json'; // Suggested filename
+            document.body.appendChild(a); // Append to body to make it clickable
+            a.click(); // Programmatically click the link to trigger download
+
+            document.body.removeChild(a); // Clean up the temporary link
+            URL.revokeObjectURL(url); // Release the object URL
+        });
+
+        // Trigger file input when Load button is clicked
+        loadConfigButton.addEventListener('click', () => {
+            loadConfigInput.click(); // Open the file picker
+        });
+
+        // Load configuration from a selected JSON file
+        loadConfigInput.addEventListener('change', (event) => {
+            const file = event.target.files[0]; // Get the selected file
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    try {
+                        const loadedConfig = JSON.parse(e.target.result);
+
+                         // Basic validation for the loaded config structure
+                        if (loadedConfig && Array.isArray(loadedConfig.buttons)) {
+                             const validatedButtonConfig = loadedConfig.buttons.map(item => {
+                                if (typeof item.text === 'string' && typeof item.link === 'string') {
+                                    // Use loaded color if valid, otherwise default
+                                    const colorName = item.color && availableColors[item.color] ? item.color : 'Blue';
+                                    return {
+                                        text: item.text,
+                                        link: item.link,
+                                        color: colorName
+                                    };
+                                } else {
+                                     console.error("Invalid item format in loaded file:", item);
+                                     return null; // Filter out invalid items
+                                }
+                             }).filter(item => item !== null);
+
+                             const loadedTitle = typeof loadedConfig.title === 'string' ? loadedConfig.title : 'My Homepage';
+
+
+                            saveButtonConfig(validatedButtonConfig); // Save loaded button config
+                            saveTitle(loadedTitle); // Save loaded title
+                            renderButtons(validatedButtonConfig); // Render buttons
+                            renderTitle(loadedTitle); // Render title
+                            alert('Configuration loaded successfully!'); // Simple success message
+                        } else {
+                            alert('Invalid configuration file format.');
+                        }
+                    } catch (error) {
+                        alert('Error reading or parsing file: ' + error.message);
+                    }
+                };
+
+                reader.onerror = () => {
+                    alert('Error reading file.');
+                };
+
+                reader.readAsText(file); // Read the file content as text
+            }
+        });
+
+        // --- Drag and Drop Logic ---
+
+        function handleDragStart(e) {
+             // Prevent drag if clicking on the edit icon
+             if (e.target.classList.contains('edit-icon')) {
+                 e.preventDefault();
+                 return;
+             }
+            draggedItem = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            // Use text/plain for dataTransfer, though not strictly needed for reordering within the same page
+            e.dataTransfer.setData('text/plain', e.target.dataset.index);
+            setTimeout(() => {
+                draggedItem.classList.add('dragging'); // Add class after a short delay
+            }, 0);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // Prevent default to allow dropping
+            e.dataTransfer.dropEffect = 'move';
+
+            const targetItem = e.target.closest('.link-button');
+            if (targetItem && targetItem !== draggedItem) {
+                 // Remove drag-over class from all buttons first
+                document.querySelectorAll('.link-button').forEach(btn => btn.classList.remove('drag-over'));
+                // Add drag-over class to the current target
+                targetItem.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+             // Remove drag-over class when leaving a target
+            e.target.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault(); // Prevent default action (opening as link)
+
+            const targetItem = e.target.closest('.link-button');
+            if (targetItem && targetItem !== draggedItem) {
+                const draggedIndex = parseInt(draggedItem.dataset.index);
+                const targetIndex = parseInt(targetItem.dataset.index);
+
+                const config = loadButtonConfig(); // Get current button config
+
+                // Reorder the config array
+                const [movedItem] = config.splice(draggedIndex, 1); // Remove item from original position
+                config.splice(targetIndex, 0, movedItem); // Insert item at new position
+
+                saveButtonConfig(config); // Save the new order
+                renderButtons(config); // Re-render buttons with new order
+            }
+
+             // Clean up drag-over classes from all buttons
+            document.querySelectorAll('.link-button').forEach(btn => btn.classList.remove('drag-over'));
+        }
+
+        function handleDragEnd(e) {
+            draggedItem.classList.remove('dragging'); // Remove dragging class
+            draggedItem = null; // Clear dragged item reference
+             // Ensure drag-over classes are removed in case dragend happens without drop
+            document.querySelectorAll('.link-button').forEach(btn => btn.classList.remove('drag-over'));
+        }
+
+        // --- Edit Modal Logic ---
+
+        // Show the edit modal overlay
+        function showEditModal() {
+            editModalOverlay.classList.add('visible');
+        }
+
+        // Hide the edit modal overlay
+        function hideEditModal() {
+            editModalOverlay.classList.remove('visible');
+            editingButtonIndex = null; // Reset editing index
+        }
+
+        // Handle saving changes from the edit modal
+        saveChangesButton.addEventListener('click', () => {
+            const config = loadButtonConfig(); // Get current button config
+            if (editingButtonIndex !== null && config[editingButtonIndex]) {
+                config[editingButtonIndex].text = editText.value;
+                config[editingButtonIndex].link = editLink.value;
+                // Color is updated directly by the color picker handler
+                saveButtonConfig(config); // Save the updated config
+                renderButtons(config); // Re-render buttons
+            }
+            hideEditModal(); // Hide the modal
+        });
+
+        // Handle cancelling edit
+        cancelEditButton.addEventListener('click', () => {
+            hideEditModal(); // Hide the modal
+        });
+
+        // Handle deleting button
+        deleteButton.addEventListener('click', () => {
+             if (editingButtonIndex !== null) {
+                 const config = loadButtonConfig(); // Get current button config
+                 config.splice(editingButtonIndex, 1); // Remove button from config
+                 saveButtonConfig(config); // Save the updated config
+                 renderButtons(config); // Re-render buttons
+                 hideEditModal(); // Hide the modal
+             }
+        });
+
+
+        // Close the edit modal if clicking outside the modal content
+        editModalOverlay.addEventListener('click', (e) => {
+            if (e.target === editModalOverlay) {
+                hideEditModal();
+            }
+        });
+
+         // --- Color Picker Popup Logic (Integrated with Edit Modal) ---
+
+         // Handle click on the color trigger div within the edit modal
+        editColorTrigger.addEventListener('click', () => {
+             populateColorPicker(); // Populate the popup with colors
+             showColorPicker(); // Show the color picker popup
+        });
+
+
+        // Populate the color picker popup with squares
+        function populateColorPicker() {
+            colorPickerPopup.innerHTML = ''; // Clear previous squares
+            for (const colorName in availableColors) {
+                const colorHex = availableColors[colorName];
+                const colorSquare = document.createElement('div');
+                colorSquare.classList.add('color-square');
+                colorSquare.style.backgroundColor = colorHex;
+                colorSquare.dataset.colorName = colorName; // Store the color name
+
+                colorSquare.addEventListener('click', handleColorSquareClick); // Add click listener
+
+                colorPickerPopup.appendChild(colorSquare);
+            }
+        }
+
+        // Handle click on a color square in the popup
+        function handleColorSquareClick(e) {
+            const selectedColorName = e.target.dataset.colorName;
+            const config = loadButtonConfig(); // Get current button config
+
+            if (editingButtonIndex !== null && config[editingButtonIndex]) {
+                config[editingButtonIndex].color = selectedColorName; // Update the button's color in config
+                 // Update the color preview in the edit modal immediately
+                 editColorPreview.style.backgroundColor = getColorHex(selectedColorName);
+                 editColorName.textContent = selectedColorName;
+                saveButtonConfig(config); // Save the updated config
+                renderButtons(config); // Re-render buttons (to show color change)
+            }
+
+            hideColorPicker(); // Hide the popup after selection
+            // editingButtonIndex is NOT reset here, as we are still in the edit modal
+        }
+
+        // Show the color picker overlay
+        function showColorPicker() {
+            colorPickerOverlay.classList.add('visible');
+        }
+
+        // Hide the color picker overlay
+        function hideColorPicker() {
+            colorPickerOverlay.classList.remove('visible');
+        }
+
+        // Close the color picker popup if clicking outside the popup content
+        colorPickerOverlay.addEventListener('click', (e) => {
+            if (e.target === colorPickerOverlay) {
+                hideColorPicker();
+            }
+        });
+
+        // --- Title Editing Logic ---
+
+        // Render the main title
+        function renderTitle(title) {
+            mainTitle.textContent = title;
+            document.title = title; // Also update the browser tab title
+        }
+
+        // Handle click on the title edit icon
+        titleEditIcon.addEventListener('click', () => {
+            mainTitle.style.display = 'none'; // Hide the text
+            titleInput.style.display = 'block'; // Show the input
+            titleInput.value = mainTitle.textContent; // Set input value to current title
+            titleInput.focus(); // Focus the input field
+        });
+
+        // Handle saving title on blur (clicking outside)
+        titleInput.addEventListener('blur', () => {
+            saveTitleEdit();
+        });
+
+        // Handle saving title on Enter key press
+        titleInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveTitleEdit();
+            }
+        });
+
+        // Save the edited title
+        function saveTitleEdit() {
+            const newTitle = titleInput.value.trim(); // Get value and remove leading/trailing whitespace
+            if (newTitle) { // Only save if not empty
+                saveTitle(newTitle); // Save to local storage
+                renderTitle(newTitle); // Update the display
+            } else {
+                // Optionally revert to previous title or a default if input is empty
+                renderTitle(loadTitle()); // Revert to saved or default title
+            }
+            titleInput.style.display = 'none'; // Hide the input
+            mainTitle.style.display = 'block'; // Show the text
+        }
+
+
+        // Initial load and render
+        const initialButtonConfig = loadButtonConfig();
+        renderButtons(initialButtonConfig);
+        const initialTitle = loadTitle();
+        renderTitle(initialTitle);
+
+
+    </script>
+
+</body>
+</html>
