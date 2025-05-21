@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file.
 2. **Hover effect** – the pencil edit icon now fades in when you hover a button, making edits obvious.
 3. **Default title updated** – new installs start with **“LinkHub Homepage”** instead of “My Homepage”.
 
-
 ## \[1.0.1] - 2025-05-08
 
 ### Added
