@@ -2,7 +2,7 @@
 
 LinkHub is a customizable homepage for your browser that allows you to easily manage your most-visited links through interactive buttons. You can add, edit, delete, and reorder buttons with ease. All configurations are saved locally, with the option to export and import settings, making it simple to transfer your setup across devices.
 
-![alt text](images/example-home-page.png)
+![alt text](../../images/example-home-page.png)
 
 ## Features
 
