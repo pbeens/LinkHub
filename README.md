@@ -2,15 +2,19 @@
 
 LinkHub is a customizable homepage for your browser that allows you to easily manage your most-visited links through interactive buttons. You can add, edit, delete, and reorder buttons with ease. All configurations are saved locally, with the option to export and import settings, making it simple to transfer your setup across devices.
 
-![alt text](./images/example-home-page.png)
+![alt text](./images/example-home-page_v1.1.1.png)
 
 ## Features
 
 * **Customizable Buttons:** Add, edit, and delete buttons with custom text, link URLs, and colors.
+* **Gradient Link Buttons:** Buttons now use visually distinctive gradient backgrounds for a modern look.
 * **Drag-and-Drop Reordering:** Organize your buttons by dragging and dropping them.
+* **Action Bar:** All action buttons and the footer are now conveniently grouped in a fixed bottom bar.
+* **Modern Action Buttons:** Action buttons redesigned with a clean white style and colored hover effects.
 * **Title Customization:** Edit the homepage title directly from the UI.
 * **Save & Load Configuration:** Export your configuration to a JSON file for backup or use on another device.
 * **Cross-Device Access:** Easily access your homepage configuration from any device by saving it to Box Drive, Dropbox, or Google Drive.
+
 
 ## Quick Start
 
