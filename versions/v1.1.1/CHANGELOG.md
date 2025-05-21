@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## \[1.1.1] - 2025-05-21
 
+### Changed
+- Link buttons now use gradient backgrounds.
+- Action buttons and footer moved into a fixed bottom bar.
+- Action buttons redesigned with a clean white style and colored hover effect.
+
 ## \[1.1.0] - 2025-05-08
 
 ### Added

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2025-05-21
+1. Gradient backgrounds for link buttons.
+2. Action buttons and footer moved into a fixed bottom bar.
+3. Action buttons now use a white style with colored hover accents.
+
 ## [1.1.0] - 2025-05-09
 
 1. **Tailwind optimisation** – stripped out the ad-hoc CSS and replaced it with utility classes for a leaner stylesheet.
